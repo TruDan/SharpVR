@@ -1,53 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1;net472;netstandard2.1;netstandard2.0</TargetFrameworks>
-    <AssemblyName>SharpVR</AssemblyName>
-    <RootNamespace>SharpVR</RootNamespace>
-    <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;DirectX</Configurations>
-    <Platforms>AnyCPU;x64;x86</Platforms>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <Authors>Jjagg,TruDan</Authors>
-    <PackageId>SharpVR.MonoGame</PackageId>
-    <PackageTags>MonoGame XNA VR Virtual-Reality</PackageTags>
-     <PackageVersion>1.0.0</PackageVersion>
-    <PackageProjectUrl>https://github.com/TruDan/SharpVR</PackageProjectUrl>
-    <IsPackable>true</IsPackable>
-    <Deterministic>true</Deterministic>
 
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/TruDan/SharpVR.git</RepositoryUrl>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedResources>true</EmbedUntrackedResources>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  
-  <Choose>
-    <When Condition="'$(Configuration)' == 'DirectX'">
-      <ItemGroup>
-        <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
-      </ItemGroup>      
-    </Otherwise>
-  </Choose>
-  
+    <PropertyGroup>
+        <TargetFrameworks>net5.0;netcoreapp3.1;net472;netstandard2.1;netstandard2.0</TargetFrameworks>
+        <AssemblyName>SharpVR</AssemblyName>
+        <RootNamespace>SharpVR</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <Configurations>Debug;Release;DirectX</Configurations>
+        <Platforms>AnyCPU;x64;x86</Platforms>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Authors>Jjagg,TruDan</Authors>
+        <PackageId>SharpVR.MonoGame</PackageId>
+        <PackageTags>MonoGame XNA VR Virtual-Reality</PackageTags>
+        <PackageVersion>1.0.0</PackageVersion>
+        <PackageProjectUrl>https://github.com/TruDan/SharpVR</PackageProjectUrl>
+        <IsPackable>true</IsPackable>
+        <Deterministic>true</Deterministic>
+
+        <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/TruDan/SharpVR.git</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedResources>true</EmbedUntrackedResources>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+        <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <Choose>
+        <When Condition="'$(Configuration)' == 'DirectX'">
+            <ItemGroup>
+                <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641"/>
+            </ItemGroup>
+        </When>
+        <Otherwise>
+            <ItemGroup>
+                <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641"/>
+            </ItemGroup>
+        </Otherwise>
+    </Choose>
+
 </Project>
