@@ -14,6 +14,6 @@ jobs:
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
         INCLUDE_SYMBOLS: true
-        PACKAGE_NAME: SharpVR
+        PACKAGE_NAME: SharpVR.MonoGame
         PROJECT_FILE_PATH: SharpVR/SharpVR.csproj
         NUGET_KEY: ${{secrets.NUGET_KEY}}
