@@ -10,7 +10,7 @@ Installation / Usage
 Simply install using NuGet. Supports `net5`, `net472`, `netcoreapp3.1`, `netstandard2.1`, `netstandard2.0`
 
 ```
-dotnet add package SharpVR
+dotnet add package SharpVR.MonoGame
 ```
 
 
