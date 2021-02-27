@@ -1,4 +1,5 @@
 *.user
+.idea/
 
 #build
 [Oo]bj/
