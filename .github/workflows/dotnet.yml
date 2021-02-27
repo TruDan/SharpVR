@@ -16,3 +16,4 @@ jobs:
         INCLUDE_SYMBOLS: true
         PACKAGE_NAME: SharpVR
         PROJECT_FILE_PATH: SharpVR/SharpVR.csproj
+        NUGET_KEY: ${{secrets.NUGET_KEY}}
