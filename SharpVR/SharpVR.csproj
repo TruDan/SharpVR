@@ -7,14 +7,14 @@
         <LangVersion>latest</LangVersion>
         <Configurations>Debug;Release;DirectX</Configurations>
         <Platforms>AnyCPU;x64;x86</Platforms>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
     </PropertyGroup>
 
     <PropertyGroup>
         <Authors>Jjagg,TruDan</Authors>
         <PackageId>SharpVR.MonoGame</PackageId>
         <PackageTags>MonoGame XNA VR Virtual-Reality</PackageTags>
-        <PackageVersion>1.0.0</PackageVersion>
+        <PackageVersion>1.0.1</PackageVersion>
         <PackageProjectUrl>https://github.com/TruDan/SharpVR</PackageProjectUrl>
         <IsPackable>true</IsPackable>
         <Deterministic>true</Deterministic>
