@@ -1,0 +1,18 @@
+name: 'Build, Pack & Publish'
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Publish NuGet
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        INCLUDE_SYMBOLS: true
+        PACKAGE_NAME: SharpVR
+        PROJECT_FILE_PATH: SharpVR/SharpVR.csproj
