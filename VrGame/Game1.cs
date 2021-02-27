@@ -107,20 +107,66 @@ namespace VrGame
         {
             if (VrEnabled)
             {
+                _vrTextures = new Texture_t[2];
+                _vrTextureBounds = new VRTextureBounds_t[2];
+                
                 _vrContext.GetRenderTargetSize(out var width, out var height);
 
-                _leftEye = new RenderTarget2D(GraphicsDevice, width, height);
-                _rightEye = new RenderTarget2D(GraphicsDevice, width, height);
+                _leftEye = CreateRenderTarget(Eye.Left);
+                _rightEye = CreateRenderTarget(Eye.Right);
 
                 Console.WriteLine($"Rendering to HMD with size ({width}, {height})");
             }
             else
             {
+                _vrTextures = new Texture_t[1];
+                _vrTextureBounds = new VRTextureBounds_t[1];
                 _leftEye = new RenderTarget2D(GraphicsDevice, Width, Height);
             }
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
         }
+
+        private Texture_t[]         _vrTextures;
+        private VRTextureBounds_t[] _vrTextureBounds;
+        
+        private RenderTarget2D CreateRenderTarget(Eye eye)
+        {
+            var eyeNo = (int) eye;
+            _vrContext.GetRenderTargetSize(out var width, out var height);
+            
+            var pp = GraphicsDevice.PresentationParameters;
+
+            var renderTarget = new RenderTarget2D(GraphicsDevice, width, height, false, SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8, pp.MultiSampleCount, RenderTargetUsage.PreserveContents);
+
+            _vrTextures[eyeNo] = new Texture_t();
+            _vrTextureBounds[eyeNo] = new VRTextureBounds_t();
+            
+#if DIRECTX
+            var info = typeof(RenderTarget2D).GetField("_msTexture", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var handle = info.GetValue(renderTarget) as SharpDX.Direct3D11.Texture2D;
+            _vrTextures[eyeNo].handle = handle.NativePointer;
+            _vrTextures[eyeNo].eType = ETextureType.DirectX;
+            _vrTextureBounds[eyeNo].uMin = 0;
+            _vrTextureBounds[eyeNo].uMax = 1;
+            _vrTextureBounds[eyeNo].vMin = 0;
+            _vrTextureBounds[eyeNo].vMax = 1;
+#else
+            var info = typeof(RenderTarget2D).GetField("glTexture", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var glTexture = (int)info.GetValue(renderTarget);
+            _vrTextures[eyeNo].handle = new System.IntPtr(glTexture);
+            _vrTextures[eyeNo].eType = ETextureType.OpenGL;
+            _vrTextureBounds[eyeNo].uMin = 0;
+            _vrTextureBounds[eyeNo].uMax = 1;
+            _vrTextureBounds[eyeNo].vMin = 1;
+            _vrTextureBounds[eyeNo].vMax = 0;
+#endif
+            _vrTextures[eyeNo].eColorSpace = EColorSpace.Gamma;
+
+            return renderTarget;
+        }
+
 
         protected override void UnloadContent()
         {
@@ -144,10 +190,8 @@ namespace VrGame
             var eyeMatrix = Matrix.Identity;
             if (VrEnabled)
             {
-                _vrContext.GetProjectionMatrix(eye, NearPlane, FarPlane, out var hmdProjection);
-                _vrContext.GetEyeMatrix(eye, out var hmdEye);
-                projection = hmdProjection.ToMg();
-                eyeMatrix = hmdEye.ToMg();
+                projection = _vrContext.GetProjectionMatrix(eye, NearPlane, FarPlane);
+               eyeMatrix =  _vrContext.GetEyeMatrix(eye);
             }
             else
             {
@@ -171,7 +215,7 @@ namespace VrGame
             if (VrEnabled)
             {
                 _vrContext.WaitGetPoses();
-                hmdMatrix = _vrContext.Hmd.GetNextPose().ToMg();
+                hmdMatrix = _vrContext.Hmd.GetNextPose();
             }
             GraphicsDevice.SetRenderTarget(_leftEye);
             GraphicsDevice.Clear(Color.Black);
@@ -195,11 +239,8 @@ namespace VrGame
             if (VrEnabled)
             {
                 // Submit the render targets for both eyes
-                var fieldInfo = typeof(Texture2D).GetField("glTexture", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-                var leftPtr = new IntPtr((int) fieldInfo.GetValue(_leftEye));
-                var rightPtr = new IntPtr((int) fieldInfo.GetValue(_rightEye));
-                _vrContext.Submit(Eye.Left, leftPtr, ETextureType.OpenGL);
-                _vrContext.Submit(Eye.Right, rightPtr, ETextureType.OpenGL);
+                _vrContext.Submit(Eye.Left, ref _vrTextures[(int)Eye.Left], ref _vrTextureBounds[(int)Eye.Left], EVRSubmitFlags.Submit_Default);
+                _vrContext.Submit(Eye.Right, ref _vrTextures[(int)Eye.Right], ref _vrTextureBounds[(int)Eye.Right], EVRSubmitFlags.Submit_Default);
             }
 
             base.Draw(gameTime);

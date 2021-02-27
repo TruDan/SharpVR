@@ -476,8 +476,7 @@ namespace SharpVR
             GC.SuppressFinalize(this);
         }
 
-        public void Submit(Eye eye, ref Texture_t vrTexture, ref VRTextureBounds_t vrTextureBounds,
-            EVRSubmitFlags     submitDefault)
+        public void Submit(Eye eye, ref Texture_t vrTexture, ref VRTextureBounds_t vrTextureBounds, EVRSubmitFlags submitDefault)
         {
             if (!Emulated)
             {
