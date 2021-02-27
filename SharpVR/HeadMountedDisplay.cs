@@ -5,5 +5,6 @@
         internal HeadMountedDisplay(VrContext context, int index) : base(context, index)
         {
         }
+
     }
 }

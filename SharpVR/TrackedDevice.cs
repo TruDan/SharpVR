@@ -1,14 +1,47 @@
 ﻿using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
+using TruSaber.Utilities.Extensions;
 using Valve.VR;
 
 namespace SharpVR
 {
-    public abstract class TrackedDevice
+    public abstract class TrackedDevice : ITrackedDevice
     {
         protected readonly VrContext Context;
-        public int Index { get; }
+        public             int       Index { get; }
 
         public bool IsConnected => Context.System.IsTrackedDeviceConnected((uint) Index);
+
+        private Vector3    _position;
+        private Vector3    _scale;
+        private Quaternion _rotation;
+        private Vector3    _nextPosition;
+        private Vector3    _nextScale;
+        private Quaternion _nextRotation;
+
+        public void GetRelativePosition(ref Vector3    position) => position = _position;
+        public void GetRelativeRotation(ref Quaternion rotation) => rotation = _rotation;
+        public void GetRelativeScale(ref    Vector3    scale) => scale = _scale;
+        
+        public Vector3    LocalPosition => _position;
+        public Quaternion LocalRotation => _rotation;
+        public Vector3    LocalScale    => _scale;
+
+        public Vector3    NextLocalPosition => _nextPosition;
+        public Quaternion NextLocalRotation => _nextRotation;
+        public Vector3    NextLocalScale    => _nextScale;
+
+        
+        private TrackedDevicePose_t Pose
+        {
+            get => Context.ValidDevicePoses[Index];
+        }
+
+        private TrackedDevicePose_t NextPose
+        {
+            get => Context.ValidNextDevicePoses[Index];
+        }
 
         internal TrackedDevice(VrContext context, int index)
         {
@@ -16,24 +49,51 @@ namespace SharpVR
             Index = index;
         }
 
-        public HmdMatrix34_t GetPose()
+        public Matrix GetPose()
         {
-            return Context.ValidDevicePoses[Index].mDeviceToAbsoluteTracking;
+            return Pose.mDeviceToAbsoluteTracking;
         }
 
-        public HmdMatrix34_t GetNextPose()
+        public Matrix GetNextPose()
         {
-            return Context.ValidNextDevicePoses[Index].mDeviceToAbsoluteTracking;
+            return NextPose.mDeviceToAbsoluteTracking;
         }
 
-        public HmdVector3_t GetVelocity()
+        public Vector3 GetVelocity()
         {
-            return Context.ValidDevicePoses[Index].vVelocity;
+            return Pose.vVelocity;
         }
 
-        public HmdVector3_t GetAngularVelocity()
+        public Vector3 GetAngularVelocity()
         {
-            return Context.ValidDevicePoses[Index].vAngularVelocity;
+            return Pose.vAngularVelocity;
+        }
+
+        public virtual void Update()
+        {
+            if (Pose.bPoseIsValid)
+            {
+                var transform = GetPose();
+                transform = Matrix.Invert(transform);
+                if (transform.Decompose(out var scale, out var rotation, out var position))
+                {
+                    _scale = scale;
+                    _rotation = rotation;
+                    _position = position;
+                }
+            }
+            
+            if (NextPose.bPoseIsValid)
+            {
+                var transform = GetNextPose();
+                transform = Matrix.Invert(transform);
+                if (transform.Decompose(out var scale, out var rotation, out var position))
+                {
+                    _nextScale = scale;
+                    _nextRotation = rotation;
+                    _nextPosition = position;
+                }
+            }
         }
 
         internal static TrackedDevice Create(VrContext context, int index)
@@ -46,7 +106,7 @@ namespace SharpVR
                 case ETrackedDeviceClass.HMD:
                     return new HeadMountedDisplay(context, index);
                 case ETrackedDeviceClass.Controller:
-                    return new Controller(context, index);
+                    return new VRController(context, index);
                 case ETrackedDeviceClass.GenericTracker:
                     return new GenericTracker(context, index);
                 case ETrackedDeviceClass.TrackingReference:
