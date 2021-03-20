@@ -18,5 +18,7 @@ namespace SharpVR
         bool GetTouchUp(EVRButtonId   buttonId);
         Ray GetPointer();
         Ray GetNextPointer();
+        void Vibrate();
+        void Vibrate(TimeSpan duration);
     }
 }
