@@ -3,7 +3,7 @@ using Valve.VR;
 
 namespace SharpVR
 {
-    public static class SharpVrExtensions
+    public static class MatrixExtensions
     {
         public static Matrix ToMg(this HmdMatrix34_t mat)
         {
@@ -29,7 +29,7 @@ namespace SharpVR
                 mat.M12, mat.M22, mat.M32, mat.M42,
                 mat.M13, mat.M23, mat.M33, mat.M43,
                 mat.M14, mat.M24, mat.M34, mat.M44);
-            
+
             // var m = new Matrix(
             //     mat.m0, mat.m1, mat.m2, mat.m3,
             //     mat.m4, mat.m5, mat.m6, mat.m7,
@@ -38,12 +38,5 @@ namespace SharpVR
 
             return m;
         }
-
-        public static Vector3 ToMg(this HmdVector3_t vec)
-        {
-            var m = new Vector3(vec.X, vec.Y, vec.Z);
-            return m;
-        }
-
     }
 }

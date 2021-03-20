@@ -251,7 +251,7 @@ namespace Valve.VR
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         internal delegate void _TriggerHapticPulse(uint unControllerDeviceIndex, uint unAxisId,
-            char                                        usDurationMicroSec);
+            ushort                                        usDurationMicroSec);
 
         [MarshalAs(UnmanagedType.FunctionPtr)]
         internal _TriggerHapticPulse TriggerHapticPulse;
@@ -2286,7 +2286,7 @@ namespace Valve.VR
             return result;
         }
 
-        public void TriggerHapticPulse(uint unControllerDeviceIndex, uint unAxisId, char usDurationMicroSec)
+        public void TriggerHapticPulse(uint unControllerDeviceIndex, uint unAxisId, ushort usDurationMicroSec)
         {
             FnTable.TriggerHapticPulse(unControllerDeviceIndex, unAxisId, usDurationMicroSec);
         }
