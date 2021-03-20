@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpVR", "SharpVR\SharpVR.csproj", "{CF82EA51-9DCC-41D9-A9F7-1BEBF0E77F3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpVR", "src\SharpVR\SharpVR.csproj", "{CF82EA51-9DCC-41D9-A9F7-1BEBF0E77F3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VrGame", "VrGame\VrGame.csproj", "{8250994B-A094-45D2-8CCA-3DF1B2430490}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VrGame", "demos\VrGame\VrGame.csproj", "{8250994B-A094-45D2-8CCA-3DF1B2430490}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8BD421A1-B09B-42D6-BF72-63E62A09DAB6}"
 EndProject
