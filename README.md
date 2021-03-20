@@ -5,6 +5,8 @@ My fork contains MonoGame intergration for types such as `Vector3` `Matrix` `Ray
 
 Oh, also made it into a NuGet Package :)
 
+[![NuGet Badge](https://buildstats.info/nuget/sharpvr.monogame)](https://www.nuget.org/packages/SharpVR.MonoGame/)
+
 Installation / Usage
 --------------------
 Simply install using NuGet. Supports `net5`, `net472`, `netcoreapp3.1`, `netstandard2.1`, `netstandard2.0`
