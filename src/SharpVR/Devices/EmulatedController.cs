@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Valve.VR;
 
 namespace SharpVR
@@ -61,6 +62,14 @@ namespace SharpVR
             direction.Normalize();
 
             return new Ray(nearPoint, direction);
+        }
+
+        public void Vibrate()
+        {
+        }
+
+        public void Vibrate(TimeSpan duration)
+        {
         }
 
         public EmulatedController(VrContext context, int index, Hand hand) : base(context, index)

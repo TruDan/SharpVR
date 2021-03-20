@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Valve.VR;
 
@@ -19,7 +20,7 @@ namespace SharpVR
         /// Attempt to initialize OpenVR.
         /// </summary>
         /// <exception cref="SharpVRException">If initialization fails.</exception>
-        void Initialize();
+        void Initialize(ILoggerFactory loggerFactory);
 
         void InitializeEmulation(int viewportWidth, int viewportHeight, float viewportFieldOfView);
         

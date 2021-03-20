@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Valve.VR;
 
@@ -48,10 +49,13 @@ namespace SharpVR
         /// Attempt to initialize OpenVR.
         /// </summary>
         /// <exception cref="SharpVRException">If initialization fails.</exception>
-        public void Initialize()
+        public void Initialize(ILoggerFactory loggerFactory)
         {
             if (Initialized)
                 return;
+
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<VrContext>();
             
             var error = EVRInitError.None;
             System = OpenVR.Init(ref error);
@@ -65,7 +69,7 @@ namespace SharpVR
             var strDriver = GetTrackedDeviceString(OpenVR.k_unTrackedDeviceIndex_Hmd, ETrackedDeviceProperty.Prop_TrackingSystemName_String);
             var strDisplay = GetTrackedDeviceString(OpenVR.k_unTrackedDeviceIndex_Hmd, ETrackedDeviceProperty.Prop_SerialNumber_String);
 
-            Debug.WriteLine($"Driver: {strDriver} - Display {strDisplay}");
+            _logger.LogDebug($"Driver: {strDriver} - Display {strDisplay}");
             
             for (var i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++)
                 RegisterDevice(i);
@@ -110,7 +114,7 @@ namespace SharpVR
             _devices[index] = device;
             if (device != null)
             {
-                Console.WriteLine($"[VR][Device {index}]: Registered ({device.GetType().Name})");
+                _logger.LogInformation($"[VR][Device {index}]: Registered ({device.GetType().Name})");
 
                 if (device is IVRController controller)
                 {
@@ -281,7 +285,7 @@ namespace SharpVR
 
         private void ProcessEvent(VREvent_t e)
         {
-            Console.WriteLine($"[VR][Device {e.trackedDeviceIndex}]: {((EVREventType)e.eventType).ToString().Replace("VREvent_", "")}");
+            _logger.LogDebug($"[VR][Device {e.trackedDeviceIndex}]: {((EVREventType)e.eventType).ToString().Replace("VREvent_", "")}");
             
             switch ((EVREventType) e.eventType)
             {
@@ -297,7 +301,7 @@ namespace SharpVR
                     break;
                 
                 default:
-                    Console.WriteLine($"Unhandled event '{(EVREventType) e.eventType}' ({e.eventType})");
+                    _logger.LogWarning($"Unhandled event '{(EVREventType) e.eventType}' ({e.eventType})");
                     break;
             }
         }
@@ -432,7 +436,9 @@ namespace SharpVR
 
         #region Singleton
 
-        protected static VrContext Instance;
+        protected static VrContext          Instance;
+        private          ILoggerFactory     _loggerFactory;
+        private          ILogger<VrContext> _logger;
 
         public static VrContext Get()
         {
@@ -482,7 +488,7 @@ namespace SharpVR
             {
                 var err = OpenVR.Compositor.Submit((EVREye) eye, ref vrTexture, ref vrTextureBounds, submitDefault);
                 if (err != EVRCompositorError.None)
-                    Console.WriteLine($"[VR][EyeCamera {eye.ToString()}] {err.ToString()}");
+                    _logger.LogError($"[VR][EyeCamera {eye.ToString()}] Error while Submitting frames: {err.ToString()}");
             }
         }
 
